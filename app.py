@@ -11,8 +11,6 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# The repository did not contain teacher-provided lesson sheets. Activity pages
-# therefore remain clearly labeled templates rather than invented instructions.
 CUSTOM_CSS = """
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
@@ -41,13 +39,7 @@ footer { color:#8295af; text-align:center; padding:2.5rem 0 1rem; font-size:.85r
 """
 st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 
-PAGES = [
-    "🏠 Home",
-    "🧬 Biology",
-    "🧪 Chemistry",
-    "⚡ Physics",
-    "💙 Thank You",
-]
+PAGES = ["🏠 Home", "🧬 Biology", "🧪 Chemistry", "⚡ Physics", "💙 Thank You"]
 
 with st.sidebar:
     st.markdown("## 🔬 Science Universe")
@@ -56,37 +48,23 @@ with st.sidebar:
     st.divider()
     st.markdown("**Your subjects**")
     st.markdown('<span class="pill">Biology</span><span class="pill">Chemistry</span><span class="pill">Physics</span>', unsafe_allow_html=True)
-    st.markdown("\n")
     st.caption("Curiosity starts with a question ✨")
 
 
 def hero(kicker: str, title: str, intro: str) -> None:
-    st.markdown(
-        f'<section class="hero"><div class="eyebrow">{escape(kicker)}</div>'
-        f'<h1>{escape(title)}</h1><p>{escape(intro)}</p></section>',
-        unsafe_allow_html=True,
-    )
+    st.markdown(f'<section class="hero"><div class="eyebrow">{escape(kicker)}</div><h1>{escape(title)}</h1><p>{escape(intro)}</p></section>', unsafe_allow_html=True)
 
 
 def card(icon: str, title: str, description: str) -> None:
-    st.markdown(
-        f'<div class="card"><div class="icon">{icon}</div><h3>{escape(title)}</h3>'
-        f'<p>{escape(description)}</p></div>',
-        unsafe_allow_html=True,
-    )
+    st.markdown(f'<div class="card"><div class="icon">{icon}</div><h3>{escape(title)}</h3><p>{escape(description)}</p></div>', unsafe_allow_html=True)
 
 
 def source_note() -> None:
-    st.markdown(
-        '<div class="note"><strong>About the lesson materials:</strong> The project did not include '
-        'the teacher’s activity sheets or chapter notes. The activity slots below are intentionally '
-        'left as templates; no teacher-specific instructions or answers have been made up.</div>',
-        unsafe_allow_html=True,
-    )
+    st.markdown('<div class="note"><strong>About the lesson materials:</strong> The project did not include the teacher’s activity sheets or chapter notes. The activity slots below are intentionally left as templates; no teacher-specific instructions or answers have been made up.</div>', unsafe_allow_html=True)
 
 
 def home() -> None:
-    hero("WELCOME, SCIENTIST", "Miss Fatima���s Science Universe", "Explore biology, chemistry, and physics in one bright, interactive learning space. Pick a subject and let your curiosity lead the way.")
+    hero("WELCOME, SCIENTIST", "Miss Fatima’s Science Universe", "Explore biology, chemistry, and physics in one bright, interactive learning space. Pick a subject and let your curiosity lead the way.")
     cols = st.columns(3)
     with cols[0]: card("🧬", "Biology", "Activities 1, 2, 3, 4 & 7, plus a Biology-only Interpret Lab.")
     with cols[1]: card("🧪", "Chemistry", "A Lewis structures lesson with worked molecule examples and a practice explorer.")
@@ -97,7 +75,6 @@ def home() -> None:
     if st.button("Explore →", type="primary"):
         st.session_state["page"] = {"Biology": "🧬 Biology", "Chemistry": "🧪 Chemistry", "Physics": "⚡ Physics", "A special thank-you": "💙 Thank You"}[chosen]
         st.rerun()
-    st.markdown("<footer>Made for curious minds · Learn at your own pace</footer>", unsafe_allow_html=True)
 
 
 def biology() -> None:
@@ -122,7 +99,6 @@ def biology() -> None:
     else:
         st.markdown(f"### 🌱 {activity}")
         st.info(f"The instructions, topic, and answer key for {activity} were not included in the project materials. This activity slot is ready for the original class handout—no details have been invented.")
-        st.markdown("**Class material**")
         st.text_area("Paste or write the teacher-provided activity prompt here for your own session.", key=f"{activity}_notes", height=150, placeholder="Teacher-provided prompt and notes…")
         st.caption("This text stays in the current app session and is not saved to the repository.")
     st.markdown("\n")
@@ -141,10 +117,10 @@ LEWIS_EXAMPLES = {
 def chemistry() -> None:
     hero("CHEMISTRY", "Lewis Structures", "See how valence electrons are represented in simple covalent molecules, then explore a worked example.")
     st.markdown("### The core idea")
-    st.write("A Lewis structure is a model that shows valence electrons: shared pairs form covalent bonds, and unshared pairs are lone pairs. For the common main-group examples below, hydrogen is shown with a duet and the other atoms with an octet.")
+    st.write("A Lewis structure is a model that shows valence electrons: shared pairs form covalent bonds, and unshared pairs are lone pairs. Hydrogen is shown with a duet and common second-period atoms with an octet.")
     st.markdown("#### A useful drawing routine")
     steps = st.columns(4)
-    step_text = [("01 · Count", "Add the valence electrons contributed by the atoms."), ("02 · Connect", "Choose a central atom (hydrogen is never central) and draw single bonds."), ("03 · Complete", "Give outer atoms their duet or octet, then place remaining electrons on the center."), ("04 · Check", "Check the total electron count and octets; use multiple bonds if needed." )]
+    step_text = [("01 · Count", "Add the valence electrons contributed by the atoms."), ("02 · Connect", "Choose a central atom (hydrogen is never central) and draw single bonds."), ("03 · Complete", "Give outer atoms their duet or octet, then place remaining electrons on the center."), ("04 · Check", "Check the total electron count and octets; use multiple bonds if needed.")]
     for col, (title, text) in zip(steps, step_text):
         with col: card("✦", title, text)
     st.markdown("### Worked examples")
@@ -153,17 +129,15 @@ def chemistry() -> None:
     st.markdown(f'<div class="formula">{escape(structure)}</div>', unsafe_allow_html=True)
     st.write(explanation)
     with st.expander("Try a quick check"):
-        st.write("In the selected example, identify the central atom (if there is one) and count its bonding pairs and lone pairs.")
-        response = st.text_input("Your answer", key="lewis_answer", placeholder="For example: 2 bonding pairs and 2 lone pairs")
+        st.text_input("Identify the central atom and count its bonding pairs and lone pairs.", key="lewis_answer", placeholder="For example: 2 bonding pairs and 2 lone pairs")
         if st.button("Show the check", key="lewis_check"):
             st.success(f"Use this structure to check your answer: {structure}. {explanation}")
-    st.caption("These are foundational examples, not a substitute for Miss Fatima’s specific class notes or required drawing conventions.")
 
 
 def physics() -> None:
     hero("PHYSICS · CHAPTER 3", "Electric Current", "A concise foundation for thinking about current, charge flow, and its measurement.")
     st.markdown("### What is electric current?")
-    st.write("Electric current describes how quickly electric charge passes a point in a circuit. The conventional-current direction is the direction positive charge would move; in a metal wire, electrons drift in the opposite direction.")
+    st.write("Electric current describes how quickly electric charge passes a point in a circuit. Conventional current is the direction positive charge would move; in a metal wire, electrons drift in the opposite direction.")
     st.markdown('<div class="formula">I = Q ÷ t</div>', unsafe_allow_html=True)
     st.write("**I** is current in amperes (A), **Q** is charge in coulombs (C), and **t** is time in seconds (s). One ampere is one coulomb of charge passing per second.")
     a, b = st.columns(2)
@@ -177,15 +151,14 @@ def physics() -> None:
         else: st.info("Use I = Q ÷ t, with charge in coulombs and time in seconds, then try again.")
     st.markdown("\n")
     source_note()
-    st.caption("This is a general introductory overview. The actual Chapter 3 notes, scope, and examples were not present in the repository; follow the class materials where they differ.")
+    st.caption("This is a general introductory overview. The actual Chapter 3 notes and examples were not present in the repository; follow the class materials where they differ.")
 
 
 def thank_you() -> None:
     hero("A NOTE FROM THE HEART", "Thank you, Miss Fatima", "For the patience, encouragement, and spark that make learning an adventure.")
-    st.markdown("<div class=" + '"hero"' + " style=\"text-align:center;padding:3.2rem 1.5rem\"><div style=\"font-size:clamp(1.7rem,5vw,3rem);font-family:'Space Grotesk',sans-serif;color:#f2f8ff\">From your student Hadi,<br>to the best teacher ❤️</div><div style=\"color:#9ce8ff;margin-top:1rem;font-size:1.1rem\">Thank you for helping curiosity grow. ✨</div></div>", unsafe_allow_html=True)
+    st.markdown('<div class="hero" style="text-align:center;padding:3.2rem 1.5rem"><div style="font-size:clamp(1.7rem,5vw,3rem);font-family:\'Space Grotesk\',sans-serif;color:#f2f8ff">From your student Hadi,<br>to the best teacher ❤️</div><div style="color:#9ce8ff;margin-top:1rem;font-size:1.1rem">Thank you for helping curiosity grow. ✨</div></div>', unsafe_allow_html=True)
 
 
-# Persist navigation from the home-page jump selector.
 if "page" in st.session_state:
     page = st.session_state.pop("page")
 
