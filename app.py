@@ -28,6 +28,15 @@ h1,h2,h3 { font-family:'Space Grotesk',sans-serif !important; color:#f2f8ff !imp
 .eyebrow { color:var(--cyan); text-transform:uppercase; letter-spacing:.18em; font-size:.75rem; font-weight:700; }
 .hero h1 { font-size:clamp(2rem,5vw,3.8rem); margin:.35rem 0 .4rem; }
 .hero p { color:#c0d0e6; font-size:1.04rem; max-width:690px; margin:0; }
+.welcome { position:relative; overflow:hidden; text-align:center; margin:0 0 1.6rem; padding:clamp(2rem,6vw,4.2rem) 1.5rem; border:1px solid rgba(119,193,255,.27); border-radius:28px; background:radial-gradient(ellipse at 50% 35%,rgba(55,92,151,.37),transparent 58%),linear-gradient(135deg,#101d36 0%,#0b172b 55%,#111b34 100%); box-shadow:0 18px 60px rgba(0,0,0,.28),inset 0 0 44px rgba(99,159,255,.07); }
+.welcome:before,.welcome:after { content:'✦'; position:absolute; color:#a7dfff; opacity:.72; text-shadow:0 0 14px #55bfff; }
+.welcome:before { top:18%; left:11%; font-size:1.15rem; }.welcome:after { bottom:18%; right:12%; font-size:.9rem; }
+.welcome-kicker { color:#9bdcff; text-transform:uppercase; letter-spacing:.24em; font-size:.76rem; font-weight:700; }
+.welcome-name { margin:.6rem 0 .1rem; font-family:'Space Grotesk',sans-serif; font-size:clamp(2.7rem,8vw,5.7rem); font-weight:700; letter-spacing:-.055em; line-height:1.08; color:#f6f9ff; text-shadow:0 5px 32px rgba(125,190,255,.24); }
+.welcome-heart { display:inline-block; margin:.05em .12em 0; color:#ff344f; font-size:clamp(3.2rem,8vw,5.4rem); line-height:1; vertical-align:-.08em; filter:drop-shadow(0 0 10px rgba(255,47,75,.78)) drop-shadow(0 0 30px rgba(255,47,75,.38)); animation:heart-glow 2.4s ease-in-out infinite; }
+.welcome-message { margin:.9rem 0 .35rem; color:#dcecff; font-family:'Space Grotesk',sans-serif; font-size:clamp(1.35rem,4vw,2.1rem); font-weight:600; }
+.welcome-subtitle { margin:0 auto; max-width:620px; color:#aebfd8; font-size:1rem; line-height:1.7; }
+@keyframes heart-glow { 0%,100% { transform:scale(1); } 50% { transform:scale(1.08); } }
 .card { height:100%; min-height:150px; padding:1.25rem; border:1px solid rgba(137,181,231,.16); border-radius:18px; background:linear-gradient(150deg,rgba(19,35,60,.94),rgba(13,25,44,.94)); }
 .card h3 { font-size:1.1rem; margin:.45rem 0 .25rem; }
 .card p,.subtle { color:var(--muted); line-height:1.65; }
@@ -41,7 +50,8 @@ h1,h2,h3 { font-family:'Space Grotesk',sans-serif !important; color:#f2f8ff !imp
 .formula { text-align:center; font-family:'Space Grotesk',sans-serif; font-size:1.5rem; color:#8ce8ff; padding:1.1rem; border-radius:14px; background:rgba(46,125,179,.13); border:1px solid rgba(83,200,255,.22); }
 .stButton>button { border-radius:11px; border:1px solid rgba(83,200,255,.5); }
 [data-testid="stImage"] img { width:100%; height:auto; border-radius:14px; }
-@media (max-width: 700px) { .hero { padding:1.4rem; border-radius:18px; } .card { min-height:unset; } .subject-card p { min-height:unset; } }
+@media (max-width: 700px) { .hero { padding:1.4rem; border-radius:18px; } .card { min-height:unset; } .subject-card p { min-height:unset; } .welcome { border-radius:20px; padding:2.1rem 1.1rem; } .welcome:before { left:6%; }.welcome:after { right:7%; } }
+@media (prefers-reduced-motion: reduce) { .welcome-heart { animation:none; } }
 </style>
 """
 st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
@@ -85,6 +95,7 @@ def source_note() -> None:
 
 
 def home() -> None:
+    st.markdown('<section class="welcome" aria-label="Welcome to Miss Fatima"><div class="welcome-kicker">A special place for a wonderful teacher</div><div class="welcome-name">Miss Fatima <span class="welcome-heart" aria-label="red heart">❤️</span></div><div class="welcome-message">Welcome, Miss Fatima!</div><p class="welcome-subtitle">We’re delighted you’re here. May every discovery in this universe bring a little wonder, inspiration, and joy.</p></section>', unsafe_allow_html=True)
     hero("WELCOME, SCIENTIST", "Miss Fatima’s Science Universe", "Explore biology, chemistry, and physics in one bright, interactive learning space. Pick a subject and let your curiosity lead the way.")
     show_image("science_universe_cover.svg", "A universe of discovery: life, matter, energy, and the connections between them")
     st.markdown("### Explore the universe of science")
