@@ -37,6 +37,22 @@ h1,h2,h3 { font-family:'Space Grotesk',sans-serif !important; color:#f2f8ff !imp
 .welcome-message { margin:.9rem 0 .35rem; color:#dcecff; font-family:'Space Grotesk',sans-serif; font-size:clamp(1.35rem,4vw,2.1rem); font-weight:600; }
 .welcome-subtitle { margin:0 auto; max-width:620px; color:#aebfd8; font-size:1rem; line-height:1.7; }
 @keyframes heart-glow { 0%,100% { transform:scale(1); } 50% { transform:scale(1.08); } }
+.tribute-wrap { position:relative; overflow:hidden; max-width:1050px; margin:1rem auto 2rem; padding:clamp(1.3rem,4vw,3.4rem); border:1px solid rgba(117,174,255,.25); border-radius:30px; background:radial-gradient(ellipse at 50% 0%,rgba(98,58,112,.25),transparent 43%),radial-gradient(ellipse at 12% 65%,rgba(41,107,156,.16),transparent 36%),linear-gradient(150deg,#101a31 0%,#0a1426 60%,#111a30 100%); box-shadow:0 25px 85px rgba(0,0,0,.36),inset 0 1px 0 rgba(255,255,255,.05); }
+.tribute-wrap:before,.tribute-wrap:after { content:'✦'; position:absolute; color:#b9dfff; opacity:.6; text-shadow:0 0 18px #65bbff; animation:tribute-sparkle 4s ease-in-out infinite; }
+.tribute-wrap:before { top:7%; left:7%; font-size:1.2rem; }.tribute-wrap:after { bottom:8%; right:8%; font-size:1rem; animation-delay:1.3s; }
+.tribute-eyebrow { text-align:center; color:#a9d8ff; font-size:.74rem; font-weight:700; letter-spacing:.28em; text-transform:uppercase; }
+.tribute-title { text-align:center; margin:.7rem 0 .2rem; font-family:'Space Grotesk',sans-serif; font-size:clamp(2rem,6vw,4rem); line-height:1.15; letter-spacing:-.04em; color:#f7f8ff; text-shadow:0 0 32px rgba(149,183,255,.22); }
+.tribute-heart { display:block; text-align:center; font-size:clamp(4rem,11vw,7.4rem); line-height:1.2; margin:.2rem auto .5rem; filter:drop-shadow(0 0 12px rgba(255,47,75,.8)) drop-shadow(0 0 36px rgba(255,47,75,.45)); animation:tribute-heartbeat 2.2s ease-in-out infinite; }
+.tribute-rule { width:min(150px,36%); height:1px; margin:1.25rem auto 1.8rem; background:linear-gradient(90deg,transparent,#9bcfff,rgba(255,116,143,.85),transparent); box-shadow:0 0 14px rgba(107,185,255,.55); }
+.tribute-copy { max-width:780px; margin:0 auto; }
+.tribute-copy p { margin:0 auto 1.25rem; color:#d7e1f1; font-size:clamp(1rem,2.3vw,1.18rem); line-height:1.9; text-align:center; }
+.tribute-copy p:first-child { color:#f0f5ff; }
+.tribute-signoff { margin-top:2rem; text-align:center; color:#bad1ec; font-size:1.05rem; line-height:1.9; }
+.tribute-signature { margin:.5rem auto 0; color:#f4f6ff; font-family:'Space Grotesk',sans-serif; font-size:clamp(1.2rem,3.3vw,1.75rem); line-height:1.55; font-weight:600; }
+.tribute-signature-heart { color:#ff3b55; filter:drop-shadow(0 0 10px rgba(255,47,75,.62)); }
+.tribute-footer { text-align:center; margin:1.6rem 0 0; color:#92b4d7; letter-spacing:.16em; font-size:.72rem; text-transform:uppercase; }
+@keyframes tribute-heartbeat { 0%,100% { transform:scale(1); } 12% { transform:scale(1.07); } 24% { transform:scale(1); } 36% { transform:scale(1.045); } 52% { transform:scale(1); } }
+@keyframes tribute-sparkle { 0%,100% { opacity:.35; transform:scale(.88) rotate(0); } 50% { opacity:.9; transform:scale(1.12) rotate(18deg); } }
 .card { height:100%; min-height:150px; padding:1.25rem; border:1px solid rgba(137,181,231,.16); border-radius:18px; background:linear-gradient(150deg,rgba(19,35,60,.94),rgba(13,25,44,.94)); }
 .card h3 { font-size:1.1rem; margin:.45rem 0 .25rem; }
 .card p,.subtle { color:var(--muted); line-height:1.65; }
@@ -50,8 +66,8 @@ h1,h2,h3 { font-family:'Space Grotesk',sans-serif !important; color:#f2f8ff !imp
 .formula { text-align:center; font-family:'Space Grotesk',sans-serif; font-size:1.5rem; color:#8ce8ff; padding:1.1rem; border-radius:14px; background:rgba(46,125,179,.13); border:1px solid rgba(83,200,255,.22); }
 .stButton>button { border-radius:11px; border:1px solid rgba(83,200,255,.5); }
 [data-testid="stImage"] img { width:100%; height:auto; border-radius:14px; }
-@media (max-width: 700px) { .hero { padding:1.4rem; border-radius:18px; } .card { min-height:unset; } .subject-card p { min-height:unset; } .welcome { border-radius:20px; padding:2.1rem 1.1rem; } .welcome:before { left:6%; }.welcome:after { right:7%; } }
-@media (prefers-reduced-motion: reduce) { .welcome-heart { animation:none; } }
+@media (max-width: 700px) { .hero { padding:1.4rem; border-radius:18px; } .card { min-height:unset; } .subject-card p { min-height:unset; } .welcome { border-radius:20px; padding:2.1rem 1.1rem; } .welcome:before { left:6%; }.welcome:after { right:7%; } .tribute-wrap { border-radius:20px; padding:1.25rem 1rem; } .tribute-copy p { line-height:1.75; margin-bottom:1.05rem; } }
+@media (prefers-reduced-motion: reduce) { .welcome-heart,.tribute-heart,.tribute-wrap:before,.tribute-wrap:after { animation:none; } }
 </style>
 """
 st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
@@ -232,8 +248,25 @@ def physics() -> None:
 
 
 def thank_you() -> None:
-    hero("A NOTE FROM THE HEART", "Thank you, Miss Fatima", "For the patience, encouragement, and spark that make learning an adventure.")
-    st.markdown('<div class="hero" style="text-align:center;padding:3.2rem 1.5rem"><div style="font-size:clamp(1.7rem,5vw,3rem);font-family:\'Space Grotesk\',sans-serif;color:#f2f8ff">From your student Hadi,<br>to the best teacher ❤️</div><div style="color:#9ce8ff;margin-top:1rem;font-size:1.1rem">Thank you for helping curiosity grow. ✨</div></div>', unsafe_allow_html=True)
+    st.markdown('''
+    <main class="tribute-wrap" aria-label="A heartfelt appreciation tribute to Miss Fatima">
+      <div class="tribute-eyebrow">With deepest appreciation</div>
+      <h1 class="tribute-title">To Our Wonderful<br>Miss Fatima</h1>
+      <span class="tribute-heart" role="img" aria-label="Red heart">❤️</span>
+      <div class="tribute-rule"></div>
+      <div class="tribute-copy">
+        <p>Thank you for every moment you gave us, for every lesson you explained, and for every time you patiently repeated something just to make sure we understood.</p>
+        <p>Thank you for never giving up on us, for believing in our abilities, and for making even difficult scientific ideas easier to understand.</p>
+        <p>Behind every lesson was your effort, behind every explanation was your patience, and behind every success was a teacher who truly cared.</p>
+        <p>We may forget some lessons over time, but we will never forget the patience, kindness, and dedication you showed us.</p>
+        <p>You are more than a science teacher. You are someone who inspires us to learn, discover, and become better every day.</p>
+        <p>Thank you for everything, Miss Fatima. You truly deserve all our appreciation and respect.</p>
+      </div>
+      <div class="tribute-rule"></div>
+      <div class="tribute-signoff">With love and gratitude,<div class="tribute-signature">From your student Hadi,<br>to the best teacher <span class="tribute-signature-heart">❤️</span></div></div>
+      <div class="tribute-footer">A teacher remembered with gratitude · Always</div>
+    </main>
+    ''', unsafe_allow_html=True)
 
 
 if "page" in st.session_state:
