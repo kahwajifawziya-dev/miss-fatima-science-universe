@@ -62,6 +62,13 @@ h1,h2,h3 { font-family:'Space Grotesk',sans-serif !important; color:#f2f8ff !imp
 .lesson-explainer { padding:1rem 1.15rem; margin:.7rem 0 1rem; border:1px solid rgba(83,200,255,.22); border-radius:14px; background:rgba(15,35,58,.82); color:#d5e2f1; line-height:1.7; }
 .lesson-explainer ul { margin:.35rem 0 0; padding-left:1.3rem; }
 .lesson-explainer li { margin:.28rem 0; }
+.lesson-card { height:100%; padding:1rem 1.1rem; border:1px solid rgba(83,200,255,.23); border-radius:17px; background:linear-gradient(145deg,rgba(19,42,69,.96),rgba(10,22,39,.96)); }
+.lesson-card h4 { margin:0 0 .55rem; color:#b5edff; font-family:'Space Grotesk',sans-serif; font-size:1.08rem; }
+.lesson-card p { margin:.35rem 0; color:#d1dfef; line-height:1.65; }
+.lesson-card .formula-large { color:#83e5ff; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:clamp(1.35rem,3vw,1.85rem); margin:.2rem 0 .55rem; }
+.label-chip { display:inline-block; border:1px solid rgba(83,200,255,.25); border-radius:99px; padding:.18rem .55rem; margin:.16rem .15rem .1rem 0; color:#b8d7f2; font-size:.8rem; }
+.practice { padding:1rem 1.1rem; border:1px solid rgba(117,210,255,.22); border-radius:16px; background:rgba(10,30,51,.75); }
+.practice h4 { margin:0 0 .45rem; color:#8ee7ff; font-family:'Space Grotesk',sans-serif; }
 .note { border-left:3px solid var(--blue); background:rgba(40,119,166,.12); border-radius:0 12px 12px 0; padding:.85rem 1rem; color:#cad9ec; }
 .formula { text-align:center; font-family:'Space Grotesk',sans-serif; font-size:1.5rem; color:#8ce8ff; padding:1.1rem; border-radius:14px; background:rgba(46,125,179,.13); border:1px solid rgba(83,200,255,.22); }
 .stButton>button { border-radius:11px; border:1px solid rgba(83,200,255,.5); }
@@ -207,44 +214,151 @@ LEWIS_EXAMPLES = {
     "CH₄ — methane": ("Four C–H single bonds", "Carbon is central and shares one pair with each of four hydrogen atoms. C has an octet; each H has a duet."),
 }
 
+CHEMISTRY_LESSONS = [
+    "Atomic structure", "Atomic number & mass number", "Electron shells", "Valence electrons", "Ions & ionic bonding", "Covalent bonding", "Lewis structures",
+]
+
+
+def chem_practice(key: str, question: str, options: list[str], correct: str, explanation_text: str) -> None:
+    st.markdown('<div class="practice"><h4>Quick practice</h4></div>', unsafe_allow_html=True)
+    response = st.radio(question, options, key=f"chem_{key}", horizontal=True)
+    if st.button("Check answer", key=f"chem_check_{key}"):
+        if response == correct:
+            st.success(f"Correct! {explanation_text}")
+        else:
+            st.info(f"Not quite. {explanation_text}")
+
 
 def chemistry() -> None:
-    hero("CHEMISTRY", "Lewis Structures", "See how valence electrons are represented in simple covalent molecules, then explore a worked example.")
-    st.markdown("### The core idea")
-    st.write("A Lewis structure is a model that shows valence electrons: shared pairs form covalent bonds, and unshared pairs are lone pairs. Hydrogen is shown with a duet and common second-period atoms with an octet.")
-    st.markdown("#### A useful drawing routine")
-    steps = st.columns(4)
-    step_text = [("01 · Count", "Add the valence electrons contributed by the atoms."), ("02 · Connect", "Choose a central atom (hydrogen is never central) and draw single bonds."), ("03 · Complete", "Give outer atoms their duet or octet, then place remaining electrons on the center."), ("04 · Check", "Check the total electron count and octets; use multiple bonds if needed.")]
-    for col, (title, text) in zip(steps, step_text):
-        with col: card("✦", title, text)
-    st.markdown("### Worked examples")
-    selected = st.selectbox("Choose a molecule", list(LEWIS_EXAMPLES))
-    structure, detail = LEWIS_EXAMPLES[selected]
-    st.markdown(f'<div class="formula">{escape(structure)}</div>', unsafe_allow_html=True)
-    st.write(detail)
-    with st.expander("Try a quick check"):
-        st.text_input("Identify the central atom and count its bonding pairs and lone pairs.", key="lewis_answer", placeholder="For example: 2 bonding pairs and 2 lone pairs")
-        if st.button("Show the check", key="lewis_check"):
-            st.success(f"Use this structure to check your answer: {structure}. {detail}")
+    hero("CHEMISTRY · ATOMS AND BONDING", "Chemistry", "Build your understanding from the parts of an atom to the bonds that join atoms together.")
+    lesson = st.selectbox("Choose a Chemistry lesson", CHEMISTRY_LESSONS, key="chem_lesson")
+
+    if lesson == "Atomic structure":
+        st.markdown("### 1 · Structure of the atom")
+        show_image("chemistry_atom.svg", "Atomic structure: nucleus with protons and neutrons, surrounded by electrons")
+        st.markdown("An atom is a tiny building block of matter. At its center is a compact **nucleus**. **Protons** have positive charge and **neutrons** have no charge. **Electrons** have negative charge and occupy regions around the nucleus called shells.")
+        cols = st.columns(3)
+        facts = [("PROTON", "+1 charge", "In the nucleus"), ("NEUTRON", "0 charge", "In the nucleus"), ("ELECTRON", "−1 charge", "In shells around nucleus")]
+        for col, (name, charge, place) in zip(cols, facts):
+            with col:
+                st.markdown(f'<div class="lesson-card"><h4>{name}</h4><p><strong>{charge}</strong></p><p>{place}</p></div>', unsafe_allow_html=True)
+        st.markdown("**Key rule:** In a neutral atom, the number of protons equals the number of electrons, so positive and negative charges balance.")
+        st.markdown("**Worked example — neutral oxygen:** Oxygen has 8 protons. A neutral oxygen atom therefore has 8 electrons. Its common nucleus contains 8 protons and 8 neutrons.")
+        chem_practice("atom", "A neutral atom has 11 protons. How many electrons does it have?", ["10", "11", "12"], "11", "In a neutral atom, proton and electron counts are equal.")
+
+    elif lesson == "Atomic number & mass number":
+        st.markdown("### 2 · Atomic number and mass number")
+        show_image("chemistry_atom.svg", "Protons and neutrons in the nucleus determine atomic and mass numbers")
+        st.markdown('<div class="lesson-card"><h4>Remember these definitions</h4><p><strong>Atomic number (Z)</strong> = number of protons. It identifies the element.</p><p><strong>Mass number (A)</strong> = protons + neutrons in one atom’s nucleus.</p><p><strong>Neutrons</strong> = mass number − atomic number.</p></div>', unsafe_allow_html=True)
+        st.markdown("**Worked example — oxygen-16:** Atomic number 8 means 8 protons. Mass number 16 means protons + neutrons = 16. Neutrons = 16 − 8 = **8**. A neutral atom also has 8 electrons.")
+        st.markdown("**Notation:** An isotope may be written as ¹⁶₈O: 16 is the mass number and 8 is the atomic number.")
+        chem_practice("numbers", "An atom has Z = 11 and A = 23. How many neutrons?", ["11", "12", "23"], "12", "Neutrons = A − Z = 23 − 11 = 12.")
+
+    elif lesson == "Electron shells":
+        st.markdown("### 3 · Electron shells and distribution")
+        show_image("chemistry_shells.svg", "Electron shells K, L, M, and N surrounding an atom")
+        st.markdown("Electrons occupy energy levels around the nucleus. Shell names K, L, M, and N correspond to principal levels n = 1, 2, 3, and 4. A shell’s theoretical maximum capacity is **2n²**: K = 2, L = 8, M = 18, N = 32 electrons.")
+        st.warning("Shell capacity is not the same as the order electrons fill. For the first 20 elements at this level, use the simple filling pattern 2, 8, 8, 2 (for example, calcium is 2,8,8,2).")
+        st.markdown("**Step-by-step examples**\n\n- Hydrogen (1 electron): K¹.\n- Oxygen (8 electrons): K² L⁶, often written 2,6.\n- Sodium (11 electrons): K² L⁸ M¹, written 2,8,1.\n- Chlorine (17 electrons): K² L⁸ M⁷, written 2,8,7.\n- Calcium (20 electrons): K² L⁸ M⁸ N², written 2,8,8,2.")
+        chem_practice("shells", "What is the shell distribution for an atom with 11 electrons?", ["2,7,2", "2,8,1", "8,3"], "2,8,1", "Fill the first shell with 2, the second with 8, then place the remaining 1 in the third shell.")
+
+    elif lesson == "Valence electrons":
+        st.markdown("### 4 · Valence electrons")
+        show_image("chemistry_shells.svg", "The outermost occupied shell contains the valence electrons")
+        st.markdown("**Valence electrons** are electrons in the outermost occupied shell. They are especially important because they take part in chemical bonding. For many main-group elements, the group number helps identify this count.")
+        st.markdown("**Worked examples**\n\n- Oxygen: 2,6 → outer shell has **6** valence electrons.\n- Sodium: 2,8,1 → **1** valence electron.\n- Chlorine: 2,8,7 → **7** valence electrons.\n- Carbon: 2,4 → **4** valence electrons.")
+        st.markdown("Atoms can become more stable by transferring or sharing outer electrons. The simple octet model is useful for these introductory examples, but it is not a universal rule for every element or compound.")
+        chem_practice("valence", "How many valence electrons does chlorine (2,8,7) have?", ["2", "7", "17"], "7", "The last number in the shell distribution is the outer-shell electron count.")
+
+    elif lesson == "Ions & ionic bonding":
+        st.markdown("### 5 · Ions and ionic bonding")
+        show_image("chemistry_ions.svg", "Electron transfer from sodium to chlorine forms oppositely charged ions")
+        st.markdown("An **ion** is an atom or group of atoms with a net electric charge because it has gained or lost electrons. The nucleus does not change during ordinary ion formation.")
+        st.markdown("- Losing negative electrons gives a **positive ion (cation)**. Sodium loses one electron: Na → Na⁺ + e⁻.\n- Gaining negative electrons gives a **negative ion (anion)**. Chlorine gains one electron: Cl + e⁻ → Cl⁻.\n- **Ionic bonding** is the electrostatic attraction between oppositely charged ions.")
+        st.markdown("**Worked example — sodium chloride (NaCl):** Sodium has 2,8,1 and loses its outer electron to become Na⁺ (2,8). Chlorine has 2,8,7 and gains that electron to become Cl⁻ (2,8,8). The + and − ions attract; the simplest ratio is one Na⁺ to one Cl⁻, giving NaCl.")
+        st.markdown("**Important:** The formula NaCl represents a 1:1 ratio in an ionic solid, not a single covalently bonded NaCl molecule.")
+        chem_practice("ions", "When a chlorine atom gains one electron, what ion forms?", ["Cl⁺", "Cl⁻", "Cl²⁻"], "Cl⁻", "Adding one negative electron makes the atom’s net charge −1.")
+
+    elif lesson == "Covalent bonding":
+        st.markdown("### 6 · Covalent bonding")
+        show_image("chemistry_covalent.svg", "Atoms sharing electron pairs in water and carbon dioxide")
+        st.markdown("A **covalent bond** forms when atoms share one or more pairs of electrons. This is common between non-metal atoms. Shared electrons count toward the outer shells of both bonded atoms.")
+        st.markdown("**Worked example — water, H₂O:** Oxygen has 6 valence electrons and needs 2 more for an octet in this simple model. Each hydrogen has 1 and needs 1 more for a duet. Oxygen shares one pair with each hydrogen: two O–H single covalent bonds. Oxygen also has two lone pairs.")
+        st.markdown("**Worked example — carbon dioxide, CO₂:** Carbon has 4 valence electrons and each oxygen has 6. Carbon shares two pairs with each oxygen, making O=C=O. Each atom reaches an octet in the Lewis model.")
+        chem_practice("covalent", "In a single covalent bond, how many electron pairs are shared?", ["One pair", "Two pairs", "Three pairs"], "One pair", "A single covalent bond represents one shared pair of electrons.")
+
+    else:
+        st.markdown("### 7 · Lewis structures")
+        show_image("chemistry_covalent.svg", "Lewis bond examples: shared pairs in covalent molecules")
+        st.markdown("Lewis structures show valence electrons as bonds (shared pairs) and lone pairs (unshared pairs). A line represents one shared pair. Hydrogen follows a duet; common second-period atoms often follow an octet in these introductory molecules.")
+        st.markdown("**A step-by-step method**\n\n1. Count all valence electrons.\n2. Choose a central atom (usually the least electronegative; never H) and connect atoms with single bonds.\n3. Complete the outer atoms’ duets or octets.\n4. Place remaining electrons on the central atom.\n5. If the central atom lacks an octet, convert a lone pair on a neighbor into a multiple bond.\n6. Check the total electron count and each atom’s duet/octet.")
+        with st.expander("Worked example: H₂O"):
+            st.markdown("1. Count: O contributes 6 and two H contribute 2 → **8 valence electrons**.\n2. Connect H–O–H: two single bonds use 4 electrons.\n3. Put the remaining 4 electrons on O as two lone pairs.\n4. Check: each H has a duet; O has two bonds (4 shared electrons) plus two lone pairs (4 electrons), an octet.")
+            st.markdown('<div class="formula">H–O–H · two lone pairs on O</div>', unsafe_allow_html=True)
+        with st.expander("Worked example: CO₂"):
+            st.markdown("1. Count: C contributes 4; two O contribute 12 → **16 valence electrons**.\n2. Start O–C–O and complete oxygen octets.\n3. Carbon is short of an octet, so convert one lone pair from each O into a shared pair.\n4. Final structure: **O=C=O**. Each O has two lone pairs; carbon and oxygen each have an octet.")
+        with st.expander("Worked example: H and O atoms"):
+            st.markdown("A single H atom has one valence electron (H·); H₂ shares one pair (H–H). An O atom has six valence electrons (six Lewis dots): two pairs and two single electrons before bonding. In H₂O, O shares one pair with each H and keeps two lone pairs.")
+        chem_practice("lewis", "How many valence electrons are in one CO₂ molecule?", ["8", "12", "16"], "16", "C has 4 and each O has 6: 4 + 6 + 6 = 16.")
+
+
+PHYSICS_FORMULAS = [
+    {"title": "Electric current", "formula": "I = Q / t", "symbols": "I = current · Q = charge · t = time", "units": "I in amperes (A); Q in coulombs (C); t in seconds (s)", "use": "Use when charge and time are known and you need current.", "example": "12 C passes in 3 s: I = 12 / 3 = 4 A."},
+    {"title": "Electric charge", "formula": "Q = I × t", "symbols": "Q = charge · I = current · t = time", "units": "Q in coulombs (C); I in amperes (A); t in seconds (s)", "use": "Use when current and time are known and you need transferred charge.", "example": "A 0.5 A current flows for 20 s: Q = 0.5 × 20 = 10 C."},
+    {"title": "Time", "formula": "t = Q / I", "symbols": "t = time · Q = charge · I = current", "units": "t in seconds (s); Q in coulombs (C); I in amperes (A)", "use": "Use when charge and current are known and you need the duration.", "example": "30 C passes at 2 A: t = 30 / 2 = 15 s."},
+]
 
 
 def physics() -> None:
-    hero("PHYSICS · CHAPTER 3", "Electric Current", "A concise foundation for thinking about current, charge flow, and its measurement.")
-    st.markdown("### What is electric current?")
-    st.write("Electric current describes how quickly electric charge passes a point in a circuit. Conventional current is the direction positive charge would move; in a metal wire, electrons drift in the opposite direction.")
-    st.markdown('<div class="formula">I = Q ÷ t</div>', unsafe_allow_html=True)
-    st.write("**I** is current in amperes (A), **Q** is charge in coulombs (C), and **t** is time in seconds (s). One ampere is one coulomb of charge passing per second.")
-    a, b = st.columns(2)
-    with a: card("🔌", "Measure current", "An ammeter measures current and is connected in series so the circuit current passes through it.")
-    with b: card("↔️", "Closed path", "Steady current in a simple circuit requires a complete conducting path and an energy source.")
+    hero("PHYSICS · CHAPTER 3", "Electric Current", "Understand current, charge, circuit meters, and the formulas that connect them.")
+    st.markdown("### The idea of current")
+    st.write("Electric current is the rate at which electric charge passes a point in a circuit. A complete conducting path is needed for a steady current. Current is measured in amperes (A).")
+    st.markdown("### Current, charge, and time · formula cards")
+    for start in range(0, len(PHYSICS_FORMULAS), 3):
+        cols = st.columns(3, gap="medium")
+        for col, item in zip(cols, PHYSICS_FORMULAS[start:start + 3]):
+            with col:
+                st.markdown(f'<div class="lesson-card"><h4>{item["title"]}</h4><div class="formula-large">{item["formula"]}</div><p><strong>Symbols:</strong> {item["symbols"]}</p><p><strong>Units:</strong> {item["units"]}</p><p><strong>When to use:</strong> {item["use"]}</p><p><strong>Example:</strong> {item["example"]}</p></div>', unsafe_allow_html=True)
+    st.markdown("#### Formula triangle")
+    st.markdown('<div class="formula">Q = I × t &nbsp;&nbsp; | &nbsp;&nbsp; I = Q / t &nbsp;&nbsp; | &nbsp;&nbsp; t = Q / I</div>', unsafe_allow_html=True)
+    st.caption("Rearrange the relationship to find the quantity you do not know. Convert measurements to A, C, and s before calculating.")
+
+    st.markdown("### Units and conversions")
+    unit_cols = st.columns(3)
+    unit_notes = [
+        ("Current", "1 A = 1000 mA", "1 mA = 0.001 A"),
+        ("Potential difference", "1 V = 1000 mV", "1 kV = 1000 V"),
+        ("Conversion tip", "Large unit → small unit: multiply by 1000", "Small unit → large unit: divide by 1000"),
+    ]
+    for col, (title, first, second) in zip(unit_cols, unit_notes):
+        with col:
+            st.markdown(f'<div class="lesson-card"><h4>{title}</h4><p>{first}</p><p>{second}</p></div>', unsafe_allow_html=True)
+    st.markdown("**Examples:** 250 mA = 0.250 A; 0.6 A = 600 mA; 4500 mV = 4.5 V; 2.4 kV = 2400 V. Voltage (V) is potential difference, not a unit of current.")
+
+    st.markdown("### Current direction: electrons and conventional current")
+    direction_a, direction_b = st.columns(2)
+    with direction_a:
+        st.markdown('<div class="lesson-card"><h4>Electron flow</h4><p>In a metal wire, negatively charged electrons drift from the negative terminal toward the positive terminal.</p></div>', unsafe_allow_html=True)
+    with direction_b:
+        st.markdown('<div class="lesson-card"><h4>Conventional current</h4><p>By convention, current direction is the direction positive charge would move: from the positive terminal toward the negative terminal through the external circuit. In metal wires it is opposite to electron drift.</p></div>', unsafe_allow_html=True)
+
+    st.markdown("### Circuit meters · connection matters")
+    show_image("physics_meter_circuits.svg", "Circuit diagrams: ammeter in series and voltmeter in parallel")
+    meter_a, meter_v = st.columns(2)
+    with meter_a:
+        st.markdown('<div class="lesson-card"><h4>🔵 Ammeter — series</h4><p>Connect an ammeter in series: the circuit current must pass through the meter. An ideal ammeter has very low resistance.</p></div>', unsafe_allow_html=True)
+    with meter_v:
+        st.markdown('<div class="lesson-card"><h4>🟣 Voltmeter — parallel</h4><p>Connect a voltmeter in parallel across the component to compare the potential difference between its two ends. An ideal voltmeter has very high resistance.</p></div>', unsafe_allow_html=True)
+
     st.markdown("### Quick concept check")
     st.write("If 12 C of charge passes a point in 3 s, what is the current?")
     answer = st.radio("Choose an answer", ["0.25 A", "4 A", "36 A"], horizontal=True, key="current_quiz")
     if st.button("Check answer", key="current_check"):
-        if answer == "4 A": st.success("Correct: I = Q ÷ t = 12 C ÷ 3 s = 4 A.")
-        else: st.info("Use I = Q ÷ t, with charge in coulombs and time in seconds, then try again.")
+        if answer == "4 A":
+            st.success("Correct: I = Q / t = 12 C / 3 s = 4 A.")
+        else:
+            st.info("Use I = Q / t, with charge in coulombs and time in seconds, then try again.")
     source_note()
-    st.caption("This is a general introductory overview. The actual Chapter 3 notes and examples were not present in the repository; follow the class materials where they differ.")
 
 
 def thank_you() -> None:
@@ -271,8 +385,13 @@ def thank_you() -> None:
 
 if "page" in st.session_state:
     page = st.session_state.pop("page")
-if page == "🏠 Home": home()
-elif page == "🧬 Biology": biology()
-elif page == "🧪 Chemistry": chemistry()
-elif page == "⚡ Physics": physics()
-else: thank_you()
+if page == "🏠 Home":
+    home()
+elif page == "🧬 Biology":
+    biology()
+elif page == "🧪 Chemistry":
+    chemistry()
+elif page == "⚡ Physics":
+    physics()
+else:
+    thank_you()
